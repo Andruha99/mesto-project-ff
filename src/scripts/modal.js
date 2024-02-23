@@ -8,11 +8,7 @@ export function setOpenPopup(popup) {
 export function setClosePopup(popup) {
   closePopupByBtn(popup);
 
-  popup.addEventListener("click", (evt) => {
-    if (evt.target === popup) {
-      popup.classList.remove("popup_is-opened");
-    }
-  });
+  popup.addEventListener("click", (evt) => closePopupByOverlay(evt, popup));
 
   document.removeEventListener("keydown", (evt) => closePopupByEsc(evt, popup));
 }
@@ -23,6 +19,12 @@ function closePopupByBtn(popup) {
   closePopupBtn.addEventListener("click", () => {
     popup.classList.remove("popup_is-opened");
   });
+}
+
+function closePopupByOverlay(evt, popup) {
+  if (evt.target === popup) {
+    popup.classList.remove("popup_is-opened");
+  }
 }
 
 function closePopupByEsc(evt, popup) {

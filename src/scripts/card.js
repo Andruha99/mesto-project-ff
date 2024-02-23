@@ -11,7 +11,6 @@ export function createCard(cardData, onDelete, setLike, openPopupImage) {
   const deleteButton = cardElement.querySelector(".card__delete-button");
 
   deleteButton.addEventListener("click", () => onDelete(cardElement));
-  console.log(cardElement);
 
   setLike(cardElement);
   openPopupImage(cardElement);
