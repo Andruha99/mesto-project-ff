@@ -1,19 +1,26 @@
 import { cardTemplate } from "../index.js";
 
 // Функция создания карточки
-export function createCard(cardData, onDelete, setLike, openPopupImage) {
+export function createCard(cardData, onDelete, isLikeCard, openPopupImage) {
   const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
 
-  cardElement.querySelector(".card__image").src = cardData.link;
-  cardElement.querySelector(".card__image").alt = `${cardData.name}`;
-  cardElement.querySelector(".card__title").textContent = `${cardData.name}`;
+  const cardElemntImage = cardElement.querySelector(".card__image");
+  const cardElemntTitle = cardElement.querySelector(".card__title");
+
+  cardElemntImage.src = cardData.link;
+  cardElemntImage.alt = cardData.name;
+  cardElemntTitle.textContent = cardData.name;
 
   const deleteButton = cardElement.querySelector(".card__delete-button");
 
   deleteButton.addEventListener("click", () => onDelete(cardElement));
 
-  setLike(cardElement);
-  openPopupImage(cardElement);
+  const likeBtn = cardElement.querySelector(".card__like-button");
+  likeBtn.addEventListener("click", () => isLikeCard(likeBtn));
+
+  cardElemntImage.addEventListener("click", () =>
+    openPopupImage(cardData.link, cardData.name)
+  );
 
   return cardElement;
 }
@@ -24,14 +31,7 @@ export function deleteCard(element) {
 }
 
 //Лайк карточки
-export function toggleLike(card) {
-  card.addEventListener("click", (evt) => {
-    if (evt.target.classList.contains("card__like-button")) {
-      likeCard(evt.target);
-    }
-  });
-}
 
-function likeCard(likeBtn) {
+export function likeCard(likeBtn) {
   likeBtn.classList.toggle("card__like-button_is-active");
 }
