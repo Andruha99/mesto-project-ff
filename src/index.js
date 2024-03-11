@@ -6,6 +6,16 @@ import {
   closePopUpByOverlay,
 } from "./scripts/modal.js";
 import { createCard, deleteCard, likeCard } from "./scripts/card.js";
+import { enableValidation, clearValidation } from "./scripts/validation.js";
+
+const validationConfig = {
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_disabled",
+  inputErrorClass: "popup__input_type_error",
+  errorClass: "popup__error_visible",
+};
 
 // @todo: Темплейт карточки
 export const cardTemplate = document.querySelector("#card-template").content;
@@ -63,12 +73,14 @@ popupNewCard
 
 //Событие открытия попапа
 editButton.addEventListener("click", () => {
-  setOpenPopup(popupEdit);
   nameInput.value = userName.textContent;
   jobInput.value = userDescription.textContent;
+  clearValidation(popupEdit, validationConfig);
+  setOpenPopup(popupEdit);
 });
 
 addCardButton.addEventListener("click", () => {
+  clearValidation(popupNewCard, validationConfig);
   setOpenPopup(popupNewCard);
 });
 
@@ -112,3 +124,5 @@ function openPopupImage(cardImage, cardTitle) {
 
   setOpenPopup(popupTypeImage);
 }
+
+enableValidation(validationConfig);
