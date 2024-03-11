@@ -7,6 +7,7 @@ import {
 } from "./scripts/modal.js";
 import { createCard, deleteCard, likeCard } from "./scripts/card.js";
 import { enableValidation, clearValidation } from "./scripts/validation.js";
+import { updateUserData, getUserAndCards } from "./scripts/api.js";
 
 const validationConfig = {
   formSelector: ".popup__form",
@@ -24,28 +25,37 @@ export const cardTemplate = document.querySelector("#card-template").content;
 const cardsContainer = document.querySelector(".places__list");
 
 // @todo: Вывести карточки на страницу
-function renderInitialCards() {
+function renderInitialCards(initialCards) {
   initialCards.forEach((item) => {
     const card = createCard(item, deleteCard, likeCard, openPopupImage);
     cardsContainer.append(card);
   });
 }
 
-renderInitialCards();
-
 //Изменение информации о пользователе
 const editProfileForm = document.forms["edit-profile"];
 const userName = document.querySelector(".profile__title");
 const userDescription = document.querySelector(".profile__description");
+const userImage = document.querySelector(".profile__image");
 const nameInput = editProfileForm.elements.name;
 const jobInput = editProfileForm.elements.description;
 
 function handleEditFormSubmit(evt) {
   evt.preventDefault();
+  const submitButton = evt.target.querySelector(".popup__button");
 
   userName.textContent = nameInput.value;
   userDescription.textContent = jobInput.value;
-  setClosePopup(evt.target.closest(".popup"));
+  console.log(evt.target);
+
+  submitButton.textContent = "Сохранение...";
+  updateUserData(nameInput.value, jobInput.value)
+    .then(() => {
+      setClosePopup(evt.target.closest(".popup"));
+    })
+    .finally(() => {
+      submitButton.textContent = "Сохранить";
+    });
 }
 
 editProfileForm.addEventListener("submit", handleEditFormSubmit);
@@ -126,3 +136,14 @@ function openPopupImage(cardImage, cardTitle) {
 }
 
 enableValidation(validationConfig);
+
+const setUserInfo = (data) => {
+  userName.textContent = data.name;
+  userDescription.textContent = data.about;
+  userImage.style = `background-image: url(${data.avatar})`;
+};
+
+getUserAndCards().then(([user, cards]) => {
+  renderInitialCards(cards);
+  setUserInfo(user);
+});
