@@ -50,22 +50,34 @@ export function createCard(
 
 // Функция удаления карточки
 export function deleteCard(element, cardId) {
-  deleteCardFromApi(cardId).then(() => {
-    element.remove();
-  });
+  deleteCardFromApi(cardId)
+    .then(() => {
+      element.remove();
+    })
+    .catch((err) => {
+      console.log(`Произошла ошибка, попробуйте позже: ${err}`);
+    });
 }
 
 //Лайк карточки
 export function likeCard(likeBtn, cardId, cardLikes) {
   if (likeBtn.classList.contains("card__like-button_is-active")) {
-    deleteLike(cardId).then((data) => {
-      likeBtn.classList.remove("card__like-button_is-active");
-      cardLikes.textContent = data.likes.length;
-    });
+    deleteLike(cardId)
+      .then((data) => {
+        likeBtn.classList.remove("card__like-button_is-active");
+        cardLikes.textContent = data.likes.length;
+      })
+      .catch((err) => {
+        console.log(`Произошла ошибка, попробуйте позже: ${err}`);
+      });
   } else {
-    setLike(cardId).then((data) => {
-      likeBtn.classList.add("card__like-button_is-active");
-      cardLikes.textContent = data.likes.length;
-    });
+    setLike(cardId)
+      .then((data) => {
+        likeBtn.classList.add("card__like-button_is-active");
+        cardLikes.textContent = data.likes.length;
+      })
+      .catch((err) => {
+        console.log(`Произошла ошибка, попробуйте позже: ${err}`);
+      });
   }
 }

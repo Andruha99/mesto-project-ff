@@ -9,22 +9,27 @@ const config = {
   },
 };
 
+//Проверка ответа с сервера
+export const checkResponse = (res) => {
+  if (res.ok) {
+    return res.json();
+  }
+
+  return Promise.reject(`Ошибка ${res.status}`);
+};
+
 //Получение даннах пользователя
 const getUserInfo = () => {
   return fetch(`${config.baseUrl}/users/me`, {
     headers: config.headers,
-  }).then((res) => {
-    return res.json();
-  });
+  }).then(checkResponse);
 };
 
 //Получение карточек
 const getCards = () => {
   return fetch(`${config.baseUrl}/cards`, {
     headers: config.headers,
-  }).then((res) => {
-    return res.json();
-  });
+  }).then(checkResponse);
 };
 
 export const getUserAndCards = () => {
@@ -40,7 +45,7 @@ export const updateUserData = (newName, newDescription) => {
       name: newName,
       about: newDescription,
     }),
-  });
+  }).then(checkResponse);
 };
 
 //Добавление новой карточки
@@ -52,9 +57,7 @@ export const addNewCard = (cardName, cardLink) => {
       name: cardName,
       link: cardLink,
     }),
-  }).then((res) => {
-    return res.json();
-  });
+  }).then(checkResponse);
 };
 
 //Удаление карточки
@@ -62,7 +65,7 @@ export const deleteCardFromApi = (cardId) => {
   return fetch(`${config.baseUrl}/cards/${cardId}`, {
     method: "DELETE",
     headers: config.headers,
-  });
+  }).then(checkResponse);
 };
 
 //Установить лайк
@@ -70,9 +73,7 @@ export const setLike = (cardId) => {
   return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
     method: "PUT",
     headers: config.headers,
-  }).then((res) => {
-    return res.json();
-  });
+  }).then(checkResponse);
 };
 
 //Убрать лайк
@@ -80,9 +81,7 @@ export const deleteLike = (cardId) => {
   return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
     method: "DELETE",
     headers: config.headers,
-  }).then((res) => {
-    return res.json();
-  });
+  }).then(checkResponse);
 };
 
 //Обновление профиля
@@ -93,7 +92,5 @@ export const changeAvatarImage = (newAvatar) => {
     body: JSON.stringify({
       avatar: newAvatar,
     }),
-  }).then((res) => {
-    return res.json();
-  });
+  }).then(checkResponse);
 };

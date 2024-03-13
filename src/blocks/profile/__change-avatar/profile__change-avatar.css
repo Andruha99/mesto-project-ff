@@ -1,0 +1,17 @@
+.profile__change-avatar {
+  position: absolute;
+  block-size: 100%;
+  inline-size: 100%;
+  background-color: black;
+  background-image: url("../../../images/edit-icon.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 26px;
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 400ms;
+}
+
+.profile__change-avatar:hover {
+  opacity: 0.8;
+}

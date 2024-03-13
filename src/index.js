@@ -55,6 +55,9 @@ function handleEditFormSubmit(evt) {
       userName.textContent = nameInput.value;
       userDescription.textContent = jobInput.value;
     })
+    .catch((err) => {
+      console.log(`Произошла ошибка, попробуйте позже: ${err}`);
+    })
     .finally(() => {
       setClosePopup(evt.target.closest(".popup"));
       submitButton.textContent = "Сохранить";
@@ -123,6 +126,9 @@ function handleAddCardFormSubmit(evt) {
       cardsContainer.prepend(card);
       addCardForm.reset();
     })
+    .catch((err) => {
+      console.log(`Произошла ошибка, попробуйте позже: ${err}`);
+    })
     .finally(() => {
       setClosePopup(evt.target.closest(".popup"));
       submitButton.textContent = "Сохранить";
@@ -158,10 +164,14 @@ const setUserInfo = (data) => {
   userImage.style = `background-image: url(${data.avatar})`;
 };
 
-getUserAndCards().then(([user, cards]) => {
-  renderInitialCards(user._id, cards);
-  setUserInfo(user);
-});
+getUserAndCards()
+  .then(([user, cards]) => {
+    renderInitialCards(user._id, cards);
+    setUserInfo(user);
+  })
+  .catch((err) => {
+    console.log(`Произошла ошибка, попробуйте позже: ${err}`);
+  });
 
 //Смена аватара
 const popupEditAvatar = document.querySelector(".popup_type_change-avatar");
@@ -188,6 +198,9 @@ const handleChangeAvatarFormSubmit = (evt) => {
   changeAvatarImage(newAvatarUrl.value)
     .then(() => {
       userImage.style = `background-image: url(${newAvatarUrl.value})`;
+    })
+    .catch((err) => {
+      console.log(`Произошла ошибка, попробуйте позже: ${err}`);
     })
     .finally(() => {
       changeAvatarForm.reset();
