@@ -6,7 +6,12 @@ import {
 } from "./scripts/modal.js";
 import { createCard, deleteCard, likeCard } from "./scripts/card.js";
 import { enableValidation, clearValidation } from "./scripts/validation.js";
-import { updateUserData, getUserAndCards, addNewCard } from "./scripts/api.js";
+import {
+  updateUserData,
+  getUserAndCards,
+  addNewCard,
+  changeAvatarImage,
+} from "./scripts/api.js";
 
 const validationConfig = {
   formSelector: ".popup__form",
@@ -49,9 +54,9 @@ function handleEditFormSubmit(evt) {
     .then(() => {
       userName.textContent = nameInput.value;
       userDescription.textContent = jobInput.value;
-      setClosePopup(evt.target.closest(".popup"));
     })
     .finally(() => {
+      setClosePopup(evt.target.closest(".popup"));
       submitButton.textContent = "Сохранить";
       submitButton.disabled = false;
     });
@@ -102,23 +107,11 @@ function handleAddCardFormSubmit(evt) {
   evt.preventDefault();
   const submitButton = evt.target.querySelector(".popup__button");
 
-  // const card = createCard(
-  //   { name: placeName.value, link: placeLink.value },
-  //   deleteCard,
-  //   likeCard,
-  //   openPopupImage
-  // );
   submitButton.textContent = "Сохранение...";
   submitButton.disabled = true;
 
   addNewCard(placeName.value, placeLink.value)
     .then((data) => {
-      // const card = createCard(
-      //   { name: placeName.value, link: placeLink.value },
-      //   deleteCard,
-      //   likeCard,
-      //   openPopupImage
-      // );
       const card = createCard(
         data.owner._id,
         data,
@@ -129,18 +122,12 @@ function handleAddCardFormSubmit(evt) {
 
       cardsContainer.prepend(card);
       addCardForm.reset();
-
-      setClosePopup(evt.target.closest(".popup"));
     })
     .finally(() => {
+      setClosePopup(evt.target.closest(".popup"));
       submitButton.textContent = "Сохранить";
       submitButton.disabled = false;
     });
-  // cardsContainer.prepend(card);
-
-  // addCardForm.reset();
-
-  // setClosePopup(evt.target.closest(".popup"));
 }
 
 addCardForm.addEventListener("submit", handleAddCardFormSubmit);
@@ -175,3 +162,39 @@ getUserAndCards().then(([user, cards]) => {
   renderInitialCards(user._id, cards);
   setUserInfo(user);
 });
+
+//Смена аватара
+const popupEditAvatar = document.querySelector(".popup_type_change-avatar");
+const changeAvatarForm = document.forms["change-avatar"];
+const newAvatarUrl = changeAvatarForm.elements["place-avatar-url"];
+
+userImage.addEventListener("click", () => {
+  clearValidation(popupEditAvatar, validationConfig);
+  setOpenPopup(popupEditAvatar);
+});
+
+popupEditAvatar.addEventListener("click", closePopUpByOverlay);
+popupEditAvatar
+  .querySelector(".popup__close")
+  .addEventListener("click", initClosePopupByBtn);
+
+const handleChangeAvatarFormSubmit = (evt) => {
+  evt.preventDefault();
+  const submitButton = evt.target.querySelector(".popup__button");
+
+  submitButton.textContent = "Сохранение...";
+  submitButton.disabled = true;
+
+  changeAvatarImage(newAvatarUrl.value)
+    .then(() => {
+      userImage.style = `background-image: url(${newAvatarUrl.value})`;
+    })
+    .finally(() => {
+      changeAvatarForm.reset();
+      setClosePopup(evt.target.closest(".popup"));
+      submitButton.textContent = "Сохранить";
+      submitButton.disabled = false;
+    });
+};
+
+changeAvatarForm.addEventListener("submit", handleChangeAvatarFormSubmit);

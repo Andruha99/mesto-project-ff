@@ -73,9 +73,6 @@ export const setLike = (cardId) => {
   }).then((res) => {
     return res.json();
   });
-  // .then((data) => {
-  //   console.log(data);
-  // });
 };
 
 //Убрать лайк
@@ -86,7 +83,17 @@ export const deleteLike = (cardId) => {
   }).then((res) => {
     return res.json();
   });
-  // .then((data) => {
-  //   console.log(data);
-  // });
+};
+
+//Обновление профиля
+export const changeAvatarImage = (newAvatar) => {
+  return fetch(`${config.baseUrl}/users/me/avatar`, {
+    method: "PATCH",
+    headers: config.headers,
+    body: JSON.stringify({
+      avatar: newAvatar,
+    }),
+  }).then((res) => {
+    return res.json();
+  });
 };
