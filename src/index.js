@@ -1,5 +1,4 @@
 import "./pages/index.css";
-import { initialCards } from "./scripts/cards.js";
 import {
   setOpenPopup,
   setClosePopup,
@@ -7,7 +6,7 @@ import {
 } from "./scripts/modal.js";
 import { createCard, deleteCard, likeCard } from "./scripts/card.js";
 import { enableValidation, clearValidation } from "./scripts/validation.js";
-import { updateUserData, getUserAndCards } from "./scripts/api.js";
+import { updateUserData, getUserAndCards, addNewCard } from "./scripts/api.js";
 
 const validationConfig = {
   formSelector: ".popup__form",
@@ -25,9 +24,9 @@ export const cardTemplate = document.querySelector("#card-template").content;
 const cardsContainer = document.querySelector(".places__list");
 
 // @todo: Вывести карточки на страницу
-function renderInitialCards(initialCards) {
+function renderInitialCards(userId, initialCards) {
   initialCards.forEach((item) => {
-    const card = createCard(item, deleteCard, likeCard, openPopupImage);
+    const card = createCard(userId, item, deleteCard, likeCard, openPopupImage);
     cardsContainer.append(card);
   });
 }
@@ -44,17 +43,17 @@ function handleEditFormSubmit(evt) {
   evt.preventDefault();
   const submitButton = evt.target.querySelector(".popup__button");
 
-  userName.textContent = nameInput.value;
-  userDescription.textContent = jobInput.value;
-  console.log(evt.target);
-
   submitButton.textContent = "Сохранение...";
+  submitButton.disabled = true;
   updateUserData(nameInput.value, jobInput.value)
     .then(() => {
+      userName.textContent = nameInput.value;
+      userDescription.textContent = jobInput.value;
       setClosePopup(evt.target.closest(".popup"));
     })
     .finally(() => {
       submitButton.textContent = "Сохранить";
+      submitButton.disabled = false;
     });
 }
 
@@ -101,18 +100,47 @@ const placeLink = addCardForm.elements["link"];
 
 function handleAddCardFormSubmit(evt) {
   evt.preventDefault();
+  const submitButton = evt.target.querySelector(".popup__button");
 
-  const card = createCard(
-    { name: placeName.value, link: placeLink.value },
-    deleteCard,
-    likeCard,
-    openPopupImage
-  );
-  cardsContainer.prepend(card);
+  // const card = createCard(
+  //   { name: placeName.value, link: placeLink.value },
+  //   deleteCard,
+  //   likeCard,
+  //   openPopupImage
+  // );
+  submitButton.textContent = "Сохранение...";
+  submitButton.disabled = true;
 
-  addCardForm.reset();
+  addNewCard(placeName.value, placeLink.value)
+    .then((data) => {
+      // const card = createCard(
+      //   { name: placeName.value, link: placeLink.value },
+      //   deleteCard,
+      //   likeCard,
+      //   openPopupImage
+      // );
+      const card = createCard(
+        data.owner._id,
+        data,
+        deleteCard,
+        likeCard,
+        openPopupImage
+      );
 
-  setClosePopup(evt.target.closest(".popup"));
+      cardsContainer.prepend(card);
+      addCardForm.reset();
+
+      setClosePopup(evt.target.closest(".popup"));
+    })
+    .finally(() => {
+      submitButton.textContent = "Сохранить";
+      submitButton.disabled = false;
+    });
+  // cardsContainer.prepend(card);
+
+  // addCardForm.reset();
+
+  // setClosePopup(evt.target.closest(".popup"));
 }
 
 addCardForm.addEventListener("submit", handleAddCardFormSubmit);
@@ -144,6 +172,6 @@ const setUserInfo = (data) => {
 };
 
 getUserAndCards().then(([user, cards]) => {
-  renderInitialCards(cards);
+  renderInitialCards(user._id, cards);
   setUserInfo(user);
 });
