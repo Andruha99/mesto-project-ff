@@ -74,11 +74,11 @@ const seEventListeners = (formElement, validationConfig) => {
 };
 
 export const enableValidation = (validationConfig) => {
-  const popupList = Array.from(
+  const formList = Array.from(
     document.querySelectorAll(`${validationConfig.formSelector}`)
   );
 
-  popupList.forEach((formElement) => {
+  formList.forEach((formElement) => {
     seEventListeners(formElement, validationConfig);
   });
 };

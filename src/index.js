@@ -22,9 +22,6 @@ const validationConfig = {
   errorClass: "popup__error_visible",
 };
 
-// @todo: Темплейт карточки
-export const cardTemplate = document.querySelector("#card-template").content;
-
 // @todo: DOM узлы
 const cardsContainer = document.querySelector(".places__list");
 
@@ -54,12 +51,12 @@ function handleEditFormSubmit(evt) {
     .then(() => {
       userName.textContent = nameInput.value;
       userDescription.textContent = jobInput.value;
+      setClosePopup(evt.target.closest(".popup"));
     })
     .catch((err) => {
       console.log(`Произошла ошибка, попробуйте позже: ${err}`);
     })
     .finally(() => {
-      setClosePopup(evt.target.closest(".popup"));
       submitButton.textContent = "Сохранить";
       submitButton.disabled = false;
     });
@@ -125,12 +122,12 @@ function handleAddCardFormSubmit(evt) {
 
       cardsContainer.prepend(card);
       addCardForm.reset();
+      setClosePopup(evt.target.closest(".popup"));
     })
     .catch((err) => {
       console.log(`Произошла ошибка, попробуйте позже: ${err}`);
     })
     .finally(() => {
-      setClosePopup(evt.target.closest(".popup"));
       submitButton.textContent = "Сохранить";
       submitButton.disabled = false;
     });
@@ -198,13 +195,13 @@ const handleChangeAvatarFormSubmit = (evt) => {
   changeAvatarImage(newAvatarUrl.value)
     .then(() => {
       userImage.style = `background-image: url(${newAvatarUrl.value})`;
+      changeAvatarForm.reset();
+      setClosePopup(evt.target.closest(".popup"));
     })
     .catch((err) => {
       console.log(`Произошла ошибка, попробуйте позже: ${err}`);
     })
     .finally(() => {
-      changeAvatarForm.reset();
-      setClosePopup(evt.target.closest(".popup"));
       submitButton.textContent = "Сохранить";
       submitButton.disabled = false;
     });
